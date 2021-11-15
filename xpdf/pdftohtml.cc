@@ -6,6 +6,13 @@
 //
 //========================================================================
 
+#include <iostream>
+#include <memory>
+
+#include <grpcpp/ext/proto_server_reflection_plugin.h>
+#include <grpcpp/grpcpp.h>
+#include <grpcpp/health_check_service_interface.h>
+
 #include <aconf.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,6 +27,10 @@
 #include "Error.h"
 #include "ErrorCodes.h"
 #include "config.h"
+#include <string>
+
+
+#include "src/cpp/pdftohtml.grpc.pb.h"
 
 //------------------------------------------------------------------------
 
@@ -35,6 +46,7 @@ static GBool skipInvisible = gFalse;
 static GBool skipImages = gFalse;
 static GBool allInvisible = gFalse;
 static char ownerPassword[33] = "\001";
+static char port[32] = "\001";
 static char userPassword[33] = "\001";
 static GBool quiet = gFalse;
 static char cfgFileName[256] = "";
@@ -42,6 +54,8 @@ static GBool printVersion = gFalse;
 static GBool printHelp = gFalse;
 
 static ArgDesc argDesc[] = {
+  {"-server",       argString,   port, sizeof(port),
+   "for port number"},
   {"-f",       argInt,      &firstPage,     0,
    "first page to convert"},
   {"-l",       argInt,      &lastPage,      0,
@@ -79,11 +93,100 @@ static ArgDesc argDesc[] = {
 
 //------------------------------------------------------------------------
 
+
+using grpc::Server;
+using grpc::ServerBuilder;
+using grpc::ServerContext;
+using grpc::Status;
+using pdftohtml::Reply;
+using pdftohtml::Request;
+using pdftohtml::ConvertPdfToHtml;
+
+using namespace std;
+
+int convert(int argc, char *argv[]);
+
 static int writeToFile(void *file, const char *data, int size) {
   return (int)fwrite(data, 1, size, (FILE *)file);
 }
 
+
+class PdfConvertServiceImpl final : public ConvertPdfToHtml::Service {
+  Status PdfToHtml(ServerContext* context, const Request* request,
+                  Reply* reply) override {
+
+std::cout << "Service started  " << std::endl;
+      char *parameters[3];
+      string str = request->source();
+      parameters[1] = &str[0];
+      string str1 = request->destination();
+      parameters[2] = &str1[0];
+      string str2 = request->password();
+      parameters[0] = &str2[0];
+
+      printf("file name is: %s\t  directory is %s\t password is %s\n",parameters[1], parameters[2], parameters[0]);
+
+
+      int ret = convert(3, parameters);
+      if(ret==0)
+      {
+      reply->set_status("successfull");
+    return Status::OK;
+      }
+      else
+      {
+      reply->set_status("unsuccessfull");
+      return Status::OK;
+      }
+  }
+};
+
+
+void RunServer(char* port) {
+  std::string server_address(port);
+  PdfConvertServiceImpl service;
+
+  grpc::EnableDefaultHealthCheckService(true);
+  grpc::reflection::InitProtoReflectionServerBuilderPlugin();
+  ServerBuilder builder;
+  // Listen on the given address without any authentication mechanism.
+  builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
+  // Register "service" as the instance through which we'll communicate with
+  // clients. In this case it corresponds to an *synchronous* service.
+  builder.RegisterService(&service);
+  // Finally assemble the server.
+  std::unique_ptr<Server> server(builder.BuildAndStart());
+  std::cout << "Server listening on " << server_address << std::endl;
+
+  // Wait for the server to shutdown. Note that some other thread must be
+  // responsible for shutting down the server for this call to ever return.
+  server->Wait();
+}
+
+
 int main(int argc, char *argv[]) {
+
+ fixCommandLine(&argc, &argv);
+  GBool ok = parseArgs(argDesc, &argc, argv);
+  if (!ok || printVersion || printHelp) {
+    fprintf(stderr, "pdftohtml version %s\n", xpdfVersion);
+    fprintf(stderr, "%s\n", xpdfCopyright);
+    if (!printVersion) {
+      printUsage("pdftohtml", "<PDF-file> <html-dir>", argDesc);
+    }
+
+  }
+
+    if(port[0]!='\001')
+    {
+          RunServer(port);
+    }
+    else {
+        return convert(argc,argv);
+    }
+}
+
+int convert(int argc, char *argv[]){
   PDFDoc *doc;
   char *fileName;
   char *htmlDir;
@@ -110,6 +213,12 @@ int main(int argc, char *argv[]) {
   fileName = argv[1];
   htmlDir = argv[2];
 
+if(port[0]!='\001')
+{
+  cout<<"in the vlock"<<endl;
+  strcpy(ownerPassword,argv[0]);
+}
+//std::cout<<"file name is: " << fileName << "\t  directory is"  << htmlDir <<"\t password is " << ownerPassword << std::endl ;
   // read config file
   globalParams = new GlobalParams(cfgFileName);
   if (quiet) {
@@ -117,6 +226,7 @@ int main(int argc, char *argv[]) {
   }
   globalParams->setupBaseFonts(NULL);
   globalParams->setTextEncoding("UTF-8");
+
 
   // open PDF file
   if (ownerPassword[0] != '\001') {
@@ -129,6 +239,7 @@ int main(int argc, char *argv[]) {
   } else {
     userPW = NULL;
   }
+
   doc = new PDFDoc(fileName, ownerPW, userPW);
   if (userPW) {
     delete userPW;
@@ -177,6 +288,7 @@ int main(int argc, char *argv[]) {
   htmlGen->setAllTextInvisible(allInvisible);
   htmlGen->setExtractFontFiles(gTrue);
   htmlGen->startDoc(doc);
+
 
   // convert the pages
   for (pg = firstPage; pg <= lastPage; ++pg) {
@@ -234,6 +346,7 @@ int main(int argc, char *argv[]) {
   // check for memory leaks
   Object::memCheck(stderr);
   gMemReport(stderr);
+
 
   return exitCode;
 }

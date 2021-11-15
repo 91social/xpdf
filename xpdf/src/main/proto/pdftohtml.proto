@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.pdftohtml";
+option java_outer_classname = "PdfToHtmlProto";
+option objc_class_prefix = "PTH";
+option java_generic_services = true;
+
+package pdftohtml;
+
+// The greeting service definition.
+service ConvertPdfToHtml {
+  // Sends a greeting
+  rpc PdfToHtml (Request) returns (Reply) {}
+}
+
+// The request message containing the data.
+message Request {
+  string source = 1;
+  string destination =2;
+  string password =3;
+}
+
+// The response message containing the greetings
+message Reply {
+  string status = 1;
+}
