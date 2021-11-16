@@ -163,7 +163,12 @@ if (HAVE_SPLASH AND PNG_FOUND)
                         ${LCMS_LIBRARY}
                         ${PNG_LIBRARIES}
                         ${FONTCONFIG_LIBRARY}
-                        ${CMAKE_THREAD_LIBS_INIT})
+                        ${CMAKE_THREAD_LIBS_INIT}
+                        grpc++
+                        hw_grpc_proto
+                        ${_REFLECTION}
+                        ${_GRPC_GRPCPP}
+                        ${_PROTOBUF_LIBPROTOBUF})
   install(TARGETS pdftohtml RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
   install(FILES ${PROJECT_SOURCE_DIR}/doc/pdftohtml.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 endif ()
