@@ -124,19 +124,34 @@ std::cout << "Service started  " << std::endl;
       string str2 = request->password();
       parameters[0] = &str2[0];
 
-      printf("file name is: %s\t  directory is %s\t password is %s\n",parameters[1], parameters[2], parameters[0]);
-
 
       int ret = convert(3, parameters);
-      if(ret==0)
+      switch(ret)
       {
+      case 0:
       reply->set_status("successfull");
-    return Status::OK;
-      }
-      else
-      {
+      return Status::OK;
+
+      case 1:
+      reply->set_status("unsuccessfull: problem reading pdf document please check password and permission");
+      return Status::OK;
+
+      case 2:
+      reply->set_status("unsuccessfull: Couldn't create HTML output directory");
+      return Status::OK;
+
+      case 3:
+      reply->set_status("unsuccessfull: Copying of text from this document is not allowed");
+      return Status::OK;
+
+      case 99:
+      reply->set_status("unsuccessfull: problem generating html");
+      return Status::OK;
+
+      default:
       reply->set_status("unsuccessfull");
       return Status::OK;
+
       }
   }
 };
@@ -215,7 +230,6 @@ int convert(int argc, char *argv[]){
 
 if(port[0]!='\001')
 {
-  cout<<"in the vlock"<<endl;
   strcpy(ownerPassword,argv[0]);
 }
 //std::cout<<"file name is: " << fileName << "\t  directory is"  << htmlDir <<"\t password is " << ownerPassword << std::endl ;
