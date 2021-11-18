@@ -165,7 +165,7 @@ if (HAVE_SPLASH AND PNG_FOUND)
                         ${FONTCONFIG_LIBRARY}
                         ${CMAKE_THREAD_LIBS_INIT}
                         grpc++
-                        hw_grpc_proto
+                        ph_grpc_proto
                         ${_REFLECTION}
                         ${_GRPC_GRPCPP}
                         ${_PROTOBUF_LIBPROTOBUF})

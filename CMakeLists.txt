@@ -23,8 +23,8 @@ include(FetchContent)
 #set(FETCHCONTENT_QUIET OFF)
 #FetchContent_MakeAvailable(gRPC)
 
-get_filename_component(hw_proto "xpdf/src/proto/" ABSOLUTE)
-get_filename_component(hw_proto_path "${hw_proto}" PATH)
+get_filename_component(ph_proto "xpdf/src/proto/" ABSOLUTE)
+get_filename_component(ph_proto_path "${hw_proto}" PATH)
 
 add_subdirectory(goo)
 add_subdirectory(fofi)
@@ -32,13 +32,13 @@ add_subdirectory(splash)
 add_subdirectory(xpdf)
 # sunil add_subdirectory(xpdf-qt)
 
-add_library(hw_grpc_proto
+add_library(ph_grpc_proto
   "xpdf/src/cpp/pdftohtml.pb.cc"
   "xpdf/src/cpp/pdftohtml.grpc.pb.cc"
   "xpdf/src/cpp/pdftohtml.pb.h"
   "xpdf/src/cpp/pdftohtml.grpc.pb.h"
 )
-target_link_libraries(hw_grpc_proto
+target_link_libraries(ph_grpc_proto
   ${_REFLECTION}
   ${_GRPC_GRPCPP}
   ${_PROTOBUF_LIBPROTOBUF})
