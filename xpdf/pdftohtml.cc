@@ -30,7 +30,7 @@
 #include <string>
 
 
-#include "src/cpp/pdftohtml.grpc.pb.h"
+#include "src/main/com/datasahi/pdftohtml/grpc/pdftohtml.grpc.pb.h"
 
 //------------------------------------------------------------------------
 

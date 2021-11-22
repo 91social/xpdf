@@ -79,13 +79,13 @@ const char descriptor_table_protodef_pdftohtml_2eproto[] PROTOBUF_SECTION_VARIAB
   "\016\n\006source\030\001 \001(\t\022\023\n\013destination\030\002 \001(\t\022\020\n\010"
   "password\030\003 \001(\t\"\027\n\005Reply\022\016\n\006status\030\001 \001(\t2"
   "G\n\020ConvertPdfToHtml\0223\n\tPdfToHtml\022\022.pdfto"
-  "html.Request\032\020.pdftohtml.Reply\"\000B2\n\032io.g"
-  "rpc.examples.pdftohtmlB\tPdfToHtmlP\001\210\001\001\242\002"
-  "\003HLWb\006proto3"
+  "html.Request\032\020.pdftohtml.Reply\"\000B8\n\033com."
+  "datasahi.pdftohtml.grpcB\016PdfToHtmlProtoP"
+  "\001\210\001\001\242\002\003PTHb\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_pdftohtml_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_pdftohtml_2eproto = {
-  false, false, 252, descriptor_table_protodef_pdftohtml_2eproto, "pdftohtml.proto", 
+  false, false, 258, descriptor_table_protodef_pdftohtml_2eproto, "pdftohtml.proto", 
   &descriptor_table_pdftohtml_2eproto_once, nullptr, 0, 2,
   schemas, file_default_instances, TableStruct_pdftohtml_2eproto::offsets,
   file_level_metadata_pdftohtml_2eproto, file_level_enum_descriptors_pdftohtml_2eproto, file_level_service_descriptors_pdftohtml_2eproto,

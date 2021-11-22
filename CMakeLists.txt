@@ -33,10 +33,10 @@ add_subdirectory(xpdf)
 # sunil add_subdirectory(xpdf-qt)
 
 add_library(ph_grpc_proto
-  "xpdf/src/cpp/pdftohtml.pb.cc"
-  "xpdf/src/cpp/pdftohtml.grpc.pb.cc"
-  "xpdf/src/cpp/pdftohtml.pb.h"
-  "xpdf/src/cpp/pdftohtml.grpc.pb.h"
+  "xpdf/src/main/com/datasahi/pdftohtml/grpc/pdftohtml.pb.cc"
+  "xpdf/src/main/com/datasahi/pdftohtml/grpc/pdftohtml.grpc.pb.cc"
+  "xpdf/src/main/com/datasahi/pdftohtml/grpc/pdftohtml.pb.h"
+  "xpdf/src/main/com/datasahi/pdftohtml/grpc/pdftohtml.grpc.pb.h"
 )
 target_link_libraries(ph_grpc_proto
   ${_REFLECTION}
